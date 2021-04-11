@@ -1,0 +1,29 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "wasm-pack build --target web --out-name wasm --out-dir static",
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$rustc"
+            ]
+        },
+        {
+            "label": "Deploy",
+            "type": "shell",
+            "command": "miniserve -v ./static --index index.html -p 8089",
+            "group": "build",
+            "dependsOn": [
+                "Build"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+ul.page_header li {
+    display: inline;
+    list-style-type: none;
+    border: 1px solid #000;
+    margin: 5px;
+    padding: 2px;
+}
+
+li.empire_name {
+    color: green;
+    
+}
+
+li.player_name {
+    color: blue;
+}

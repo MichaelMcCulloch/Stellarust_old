@@ -1,0 +1,1 @@
+Just a stellaris stats frontend
