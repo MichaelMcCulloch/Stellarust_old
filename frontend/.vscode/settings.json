@@ -1,0 +1,9 @@
+{
+    "files.exclude": {
+        "target":true,
+        "Cargo.lock":true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true
+    }
+}
