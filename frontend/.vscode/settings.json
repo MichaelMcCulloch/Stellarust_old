@@ -2,8 +2,9 @@
     "files.exclude": {
         "target":true,
         "Cargo.lock":true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true
+        ".vscode/":true,
+        ".gitignore":true,
+        "static/.gitignore":true,
+        "static/*wasm*":true
     }
 }
