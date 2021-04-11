@@ -16,9 +16,9 @@
             ]
         },
         {
-            "label": "Deploy",
+            "label": "Deploy Client",
             "type": "shell",
-            "command": "miniserve -v ./static --index index.html -p 8089",
+            "command": "miniserve -v ./static --index index.html -p 3000",
             "group": "build",
             "dependsOn": [
                 "Build"

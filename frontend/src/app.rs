@@ -1,5 +1,5 @@
 use super::header::PageHeader;
-
+use super::api_request::ApiComponent;
 use yew::prelude::*;
 
 pub struct App {
@@ -39,6 +39,7 @@ impl Component for App {
         html! {
             <div class="main"> 
                <PageHeader empire_name="THE GREAT KHANATE" player_name="George"/>
+               <ApiComponent/>
             </div>
         }
     }

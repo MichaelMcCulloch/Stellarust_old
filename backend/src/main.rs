@@ -4,6 +4,8 @@ use actix::prelude::*;
 use actix_files as fs;
 use actix_web::{middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
+use serde::{Deserialize, Serialize};
+use actix_cors::Cors;
 
 /// How often heartbeat pings are sent
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
@@ -90,22 +92,45 @@ impl MyWebSocket {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct MyJsonFile {
+    name: String,
+    number: i32
+}
+
+async fn echo_json_file(item: web::Json<MyJsonFile>) -> HttpResponse {
+    HttpResponse::Ok().json(item.0)
+}
+
+async fn get_json_file() -> HttpResponse {
+    let payload = MyJsonFile {
+        name: "asdf".into(),
+        number: 3
+    };
+
+    HttpResponse::Ok().json(payload)
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
     env_logger::init();
 
     HttpServer::new(|| {
+
+      
         App::new()
             // enable logger
             .wrap(middleware::Logger::default())
             // websocket route
-            .service(web::resource("/ws/").route(web::get().to(ws_index)))
+            //.service(web::resource("/ws/").route(web::get().to(ws_index)))
             // static files
-            .service(fs::Files::new("/", "static/").index_file("index.html"))
+            //.service(fs::Files::new("/", "static/").index_file("index.html"))
+            .service(web::resource("/json_post/").route(web::post().to(echo_json_file)))
+            .service(web::resource("/json_get/").route(web::get().to(get_json_file)))
     })
     // start http server on 127.0.0.1:8080
-    .bind("127.0.0.1:8080")?
+    .bind("localhost:8000")?
     .run()
     .await
 }

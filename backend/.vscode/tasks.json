@@ -6,12 +6,29 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "wasm-pack build --target web --out-name wasm --out-dir static",
+            "command": "cargo build",
+            "group": "build",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "problemMatcher": []
+            "problemMatcher": [
+                "$rustc"
+            ]
         },
-        
+        {
+            "label": "Run Server",
+            "type": "shell",
+            "command": "cargo run",
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "dependsOn": [
+                "Build"
+            ],
+        }
     ]
 }
