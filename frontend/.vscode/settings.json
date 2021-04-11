@@ -1,9 +1,9 @@
 {
     "files.exclude": {
-        "target":true,
-        "Cargo.lock":true,
-        ".vscode/":true,
         ".gitignore":true,
+        ".vscode/":true,
+        "Cargo.lock":true,
+        "target":true,
         "static/.gitignore":true,
         "static/*wasm*":true
     }

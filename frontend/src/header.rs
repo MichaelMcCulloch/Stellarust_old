@@ -31,7 +31,6 @@ impl Component for PageHeader {
             false
         }
     }
-
     fn view(&self) -> Html {
         html! {
             <ul class="page_header">

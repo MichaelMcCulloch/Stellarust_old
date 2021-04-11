@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "backend",
+			"name": "Server"
+		},
+		{
+			"path": "frontend",
+			"name": "Client"
+		},
+		{
+			"path": "html_dummy",
+			"name": "HTML Scratch"
+		}
+	],
+	"settings": {
+		"rust-analyzer.diagnostics.disabled": [
+			"unresolved-macro-call"
+		],
+	},
+	"extensions": {
+		"recommendations": [
+			"matklad.rust-analyzer",
+			"tht13.html-preview-vscode",
+			"serayuzgur.crates",
+			"bungcip.better-toml"
+		]
+	},
+}
