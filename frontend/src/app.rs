@@ -1,5 +1,5 @@
 use super::header::PageHeader;
-use super::api_request::ApiComponent;
+use super::fetch_service::ApiComponent;
 use yew::prelude::*;
 
 pub struct App {
