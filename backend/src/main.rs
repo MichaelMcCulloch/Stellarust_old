@@ -1,11 +1,12 @@
 use std::time::{Duration, Instant};
 
 use actix::prelude::*;
+use actix_cors::Cors;
 use actix_files as fs;
-use actix_web::{middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer};
+use actix_web::{get, http, web, App, HttpRequest, HttpResponse, HttpServer};
+use actix_web::{middleware, Error};
 use actix_web_actors::ws;
 use serde::{Deserialize, Serialize};
-use actix_cors::Cors;
 
 /// How often heartbeat pings are sent
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
@@ -39,11 +40,7 @@ impl Actor for MyWebSocket {
 
 /// Handler for `ws::Message`
 impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for MyWebSocket {
-    fn handle(
-        &mut self,
-        msg: Result<ws::Message, ws::ProtocolError>,
-        ctx: &mut Self::Context,
-    ) {
+    fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {
         // process websocket messages
         println!("WS: {:?}", msg);
         match msg {
@@ -95,7 +92,7 @@ impl MyWebSocket {
 #[derive(Debug, Serialize, Deserialize)]
 struct MyJsonFile {
     name: String,
-    number: i32
+    number: i32,
 }
 
 async fn echo_json_file(item: web::Json<MyJsonFile>) -> HttpResponse {
@@ -105,7 +102,7 @@ async fn echo_json_file(item: web::Json<MyJsonFile>) -> HttpResponse {
 async fn get_json_file() -> HttpResponse {
     let payload = MyJsonFile {
         name: "asdf".into(),
-        number: 3
+        number: 3,
     };
 
     HttpResponse::Ok().json(payload)
@@ -117,11 +114,23 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
 
     HttpServer::new(|| {
+        let cors = Cors::default()
+            .allowed_origin("http://localhost:3000")
+            .allowed_origin("http://127.0.0.1:3000")
+            .allowed_origin("http://localhost:8000")
+            .allowed_origin("http://0.0.0.0:8000")
+            .allowed_methods(vec![http::Method::GET])
+            .allowed_headers(vec![
+                http::header::AUTHORIZATION,
+                http::header::ACCEPT,
+                http::header::ACCESS_CONTROL_ALLOW_ORIGIN,
+            ])
+            .max_age(3600);
 
-      
         App::new()
             // enable logger
             .wrap(middleware::Logger::default())
+            .wrap(cors)
             // websocket route
             //.service(web::resource("/ws/").route(web::get().to(ws_index)))
             // static files
