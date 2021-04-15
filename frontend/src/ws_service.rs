@@ -63,7 +63,7 @@ impl Component for WebsocketComponent {
                         WebSocketStatus::Closed | WebSocketStatus::Error => WsAction::Lost.into(),
                     });
                     let task =
-                        WebSocketService::connect("ws://localhost:8000/", callback, notification)
+                        WebSocketService::connect("ws://127.0.0.1:8000/", callback, notification)
                             .unwrap();
                     self.ws = Some(task);
                     true
