@@ -1,15 +1,14 @@
 use anyhow::Error;
 use serde_derive::Deserialize;
+use yew::prelude::*;
+use yew::services::fetch::FetchTask;
 use yew::{
     format::{Json, Nothing},
-    html,
     services::{
         fetch::{Request, Response},
         FetchService,
     },
-    Html,
 };
-use yew::{services::fetch::FetchTask, Component, ComponentLink};
 #[derive(Debug, Deserialize)]
 struct MyJsonFile {
     name: String,
@@ -22,20 +21,20 @@ pub enum Msg {
     Ignore,
 }
 
-pub struct ApiComponent {
-    link: ComponentLink<ApiComponent>,
+pub struct FetchComponent {
+    link: ComponentLink<FetchComponent>,
     fetching: bool,
     data: Option<MyJsonFile>,
     ft: Option<FetchTask>,
 }
 
-impl ApiComponent {
+impl FetchComponent {
     fn view_data(&self) -> Html {
         if let Some(value) = &self.data {
             html! {
                 <>
-                    <p>{ &value.name }</p>
-                    <p  >{ &value.number }</p>
+                    <p> { &value.name } </p>
+                    <p> { &value.number } </p>
                 </>
             }
         } else {
@@ -64,13 +63,13 @@ impl ApiComponent {
     }
 }
 
-impl Component for ApiComponent {
+impl Component for FetchComponent {
     type Message = Msg;
 
     type Properties = ();
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        ApiComponent {
+        FetchComponent {
             link,
             fetching: false,
             data: None,

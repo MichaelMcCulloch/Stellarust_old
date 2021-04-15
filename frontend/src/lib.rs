@@ -1,10 +1,10 @@
 #![recursion_limit = "256"]
 
-
 mod app;
+mod fetch_service;
 mod graph;
 mod header;
-mod fetch_service;
+mod ws_service;
 
 pub use app::App;
 

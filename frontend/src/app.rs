@@ -1,5 +1,6 @@
+use super::fetch_service::FetchComponent;
 use super::header::PageHeader;
-use super::fetch_service::ApiComponent;
+use super::ws_service::WebsocketComponent;
 use yew::prelude::*;
 
 pub struct App {
@@ -37,9 +38,10 @@ impl Component for App {
 
     fn view(&self) -> Html {
         html! {
-            <div class="main"> 
+            <div class="main">
                <PageHeader empire_name="THE GREAT KHANATE" player_name="George"/>
-               <ApiComponent/>
+               <FetchComponent/>
+               <WebsocketComponent/>
             </div>
         }
     }

@@ -132,7 +132,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .wrap(cors)
             // websocket route
-            //.service(web::resource("/ws/").route(web::get().to(ws_index)))
+            .service(web::resource("/").route(web::get().to(ws_index)))
             // static files
             //.service(fs::Files::new("/", "static/").index_file("index.html"))
             .service(web::resource("/json_post/").route(web::post().to(echo_json_file)))
