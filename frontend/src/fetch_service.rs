@@ -10,7 +10,7 @@ use yew::{
     },
 };
 #[derive(Debug, Deserialize)]
-struct MyJsonFile {
+pub struct MyJsonFile {
     name: String,
     number: u32,
 }
@@ -68,7 +68,7 @@ impl Component for FetchComponent {
 
     type Properties = ();
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
         FetchComponent {
             link,
             fetching: false,

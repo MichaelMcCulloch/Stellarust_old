@@ -1,18 +1,11 @@
 use anyhow::Error;
 use serde_derive::{Deserialize, Serialize};
+use yew::format::Json;
 use yew::prelude::*;
-use yew::services::fetch::FetchTask;
 use yew::services::websocket::{WebSocketService, WebSocketStatus, WebSocketTask};
-use yew::{
-    format::{Json, Nothing},
-    services::{
-        fetch::{Request, Response},
-        FetchService,
-    },
-};
 
 #[derive(Debug, Deserialize, Serialize)]
-struct MyJsonFile {
+pub struct MyJsonFile {
     name: String,
     number: i32,
 }
@@ -45,7 +38,7 @@ impl Component for WebsocketComponent {
 
     type Properties = ();
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
         WebsocketComponent {
             link,
             data: None,

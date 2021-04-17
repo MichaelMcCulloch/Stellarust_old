@@ -2,7 +2,6 @@ use std::time::{Duration, Instant};
 
 use actix::prelude::*;
 use actix_cors::Cors;
-use actix_files as fs;
 use actix_web::{get, http, web, App, HttpRequest, HttpResponse, HttpServer};
 use actix_web::{middleware, Error};
 use actix_web_actors::ws;
