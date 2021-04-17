@@ -5,6 +5,7 @@ use actix_cors::Cors;
 use actix_web::{get, http, web, App, HttpRequest, HttpResponse, HttpServer};
 use actix_web::{middleware, Error};
 use actix_web_actors::ws;
+use listenfd::ListenFd;
 use serde::{Deserialize, Serialize};
 
 /// How often heartbeat pings are sent
@@ -88,7 +89,7 @@ impl MyWebSocket {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 struct MyJsonFile {
     name: String,
     number: i32,
@@ -112,7 +113,9 @@ async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
     env_logger::init();
 
-    HttpServer::new(|| {
+    let mut listenfd = ListenFd::from_env();
+
+    let mut server = HttpServer::new(|| {
         let cors = Cors::default()
             .allowed_origin("http://localhost:3000")
             .allowed_origin("http://127.0.0.1:3000")
@@ -136,9 +139,16 @@ async fn main() -> std::io::Result<()> {
             //.service(fs::Files::new("/", "static/").index_file("index.html"))
             .service(web::resource("/json_post/").route(web::post().to(echo_json_file)))
             .service(web::resource("/json_get/").route(web::get().to(get_json_file)))
-    })
+    });
+
+    server = match listenfd.take_tcp_listener(0)? {
+        Some(listener) => server.listen(listener)?,
+        None => {
+            let host = "localhost";
+            let port = "8000";
+            server.bind(format!("{}:{}", host, port))?
+        }
+    };
     // start http server on 127.0.0.1:8080
-    .bind("localhost:8000")?
-    .run()
-    .await
+    server.run().await
 }

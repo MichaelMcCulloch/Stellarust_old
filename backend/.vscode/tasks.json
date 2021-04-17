@@ -18,16 +18,13 @@
         {
             "label": "Run Server",
             "type": "shell",
-            "command": "cargo run",
+            "command": "systemfd --no-pid -s http::8000 -- cargo-watch -x run",
             "group": "build",
             "options": {
                 "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
                 "$rustc"
-            ],
-            "dependsOn": [
-                "Build"
             ],
         }
     ]
