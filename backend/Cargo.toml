@@ -1,5 +1,5 @@
 [package]
-name = "stellarust_backend"
+name = "backend"
 version = "0.1.0"
 authors = ["Michael McCulloch <michael.james.mcculloch@fastmail.com>"]
 edition = "2018"
