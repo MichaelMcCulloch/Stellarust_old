@@ -9,6 +9,17 @@ pub struct MyJsonFile {
     name: String,
     number: i32,
 }
+#[derive(Debug, Deserialize, Serialize)]
+pub enum SubscriptionAction {
+    Subscribe,
+    Unsubscribe,
+}
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SubscriptionRequest {
+    action: SubscriptionAction,
+    empire_name: String,
+}
+
 pub enum WsAction {
     Connect,
     SendData,

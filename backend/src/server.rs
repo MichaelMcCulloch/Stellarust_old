@@ -101,7 +101,7 @@ pub fn get_json_file() -> HttpResponse {
     HttpResponse::Ok().json(payload)
 }
 
-pub fn config_app(cfg: &mut web::ServiceConfig) {
+pub fn config_server(cfg: &mut web::ServiceConfig) {
     cfg.service(web::resource("/").route(web::get().to(ws_index)));
     cfg.service(web::resource("/json_post/").route(web::post().to(echo_json_file)));
     cfg.service(web::resource("/json_get/").route(web::get().to(get_json_file)));

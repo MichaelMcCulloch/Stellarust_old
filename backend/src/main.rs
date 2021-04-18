@@ -1,14 +1,26 @@
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
 use actix_cors::Cors;
-use actix_web::{http, web, App, HttpRequest, HttpResponse, HttpServer};
-use actix_web::{middleware, Error};
+use actix_web::middleware;
+use actix_web::{http, App, HttpServer};
 use listenfd::ListenFd;
 
 mod data;
+mod file;
 mod server;
-use crate::server::config_app;
+
+use crate::server::config_server;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    let (tx, rx) = mpsc::channel();
+    thread::spawn(move || {
+        println!("alks;dfljkdsfdsajk");
+        tx.send("a value")
+    });
+
     std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
     env_logger::init();
 
@@ -32,7 +44,7 @@ async fn main() -> std::io::Result<()> {
             // enable logger
             .wrap(middleware::Logger::default())
             .wrap(cors)
-            .configure(config_app)
+            .configure(config_server)
     });
 
     server = match listenfd.take_tcp_listener(0)? {
@@ -43,6 +55,8 @@ async fn main() -> std::io::Result<()> {
             server.bind(format!("{}:{}", host, port))?
         }
     };
+
     // start http server on 127.0.0.1:8080
+    println!("{}", rx.recv().unwrap());
     server.run().await
 }
