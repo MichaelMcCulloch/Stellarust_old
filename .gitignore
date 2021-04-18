@@ -1,4 +1,5 @@
-todomvc/*
-html_dummy/*
-model/*
-
+/todomvc
+/html_dummy
+/model
+/target
+Cargo.lock

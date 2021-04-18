@@ -1,7 +1,7 @@
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct MyJsonFile {
     pub name: String,
-    pub number: i32,
+    pub number: u32,
 }

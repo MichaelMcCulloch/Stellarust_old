@@ -5,7 +5,8 @@ use actix_web::Error;
 use actix_web::{web, HttpRequest, HttpResponse};
 use actix_web_actors::ws;
 
-use crate::data;
+extern crate common;
+use common::MyJsonFile;
 
 /// How often heartbeat pings are sent
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
@@ -88,12 +89,12 @@ impl MyWebSocket {
     }
 }
 
-pub fn echo_json_file(item: web::Json<data::MyJsonFile>) -> HttpResponse {
+pub fn echo_json_file(item: web::Json<MyJsonFile>) -> HttpResponse {
     HttpResponse::Ok().json(item.0)
 }
 
 pub fn get_json_file() -> HttpResponse {
-    let payload = data::MyJsonFile {
+    let payload = MyJsonFile {
         name: "asdf".into(),
         number: 3,
     };
