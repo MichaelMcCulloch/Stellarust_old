@@ -5,19 +5,7 @@ use listenfd::ListenFd;
 
 mod data;
 mod server;
-
-/// do websocket handshake and start `MyWebSocket` actor
-async fn ws_index(r: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
-    server::ws_index(r, stream)
-}
-
-async fn echo_json_file(item: web::Json<data::MyJsonFile>) -> HttpResponse {
-    server::echo_json_file(item)
-}
-
-async fn get_json_file() -> HttpResponse {
-    server::get_json_file()
-}
+use crate::server::config_app;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -44,12 +32,7 @@ async fn main() -> std::io::Result<()> {
             // enable logger
             .wrap(middleware::Logger::default())
             .wrap(cors)
-            // websocket route
-            .service(web::resource("/").route(web::get().to(ws_index)))
-            // static files
-            //.service(fs::Files::new("/", "static/").index_file("index.html"))
-            .service(web::resource("/json_post/").route(web::post().to(echo_json_file)))
-            .service(web::resource("/json_get/").route(web::get().to(get_json_file)))
+            .configure(config_app)
     });
 
     server = match listenfd.take_tcp_listener(0)? {

@@ -13,7 +13,7 @@ const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
 
 /// do websocket handshake and start `MyWebSocket` actor
-pub fn ws_index(r: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
+async fn ws_index(r: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
     println!("{:?}", r);
     let res = ws::start(MyWebSocket::new(), &r, stream);
     println!("{:?}", res);
@@ -99,4 +99,10 @@ pub fn get_json_file() -> HttpResponse {
     };
 
     HttpResponse::Ok().json(payload)
+}
+
+pub fn config_app(cfg: &mut web::ServiceConfig) {
+    cfg.service(web::resource("/").route(web::get().to(ws_index)));
+    cfg.service(web::resource("/json_post/").route(web::post().to(echo_json_file)));
+    cfg.service(web::resource("/json_get/").route(web::get().to(get_json_file)));
 }
