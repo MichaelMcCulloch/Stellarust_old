@@ -1,12 +1,12 @@
 use yew::prelude::*;
 
 pub struct Graph {
-    props: Props
+    props: Props,
 }
 
 #[derive(Clone, PartialEq, Properties)]
 pub struct Props {
-    pub what: u32
+    pub what: u32,
 }
 
 impl Component for Graph {
