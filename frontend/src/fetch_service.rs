@@ -9,11 +9,8 @@ use yew::{
         FetchService,
     },
 };
-#[derive(Debug, Deserialize)]
-pub struct MyJsonFile {
-    name: String,
-    number: u32,
-}
+extern crate common;
+use common::MyJsonFile;
 
 pub enum Msg {
     FetchData,

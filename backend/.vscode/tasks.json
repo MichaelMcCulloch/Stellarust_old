@@ -18,7 +18,7 @@
         {
             "label": "Run Server",
             "type": "shell",
-            "command": "systemfd -s http::8000 -- cargo-watch -x run",
+            "command": "systemfd --no-pid -s http::8000 -- cargo-watch -x run",
             "group": "build",
             "detail": "Attaches binary to systemd so it can be rebuilt/deployed without closing the port",
             "options": {

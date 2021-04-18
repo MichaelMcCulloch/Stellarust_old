@@ -7,7 +7,6 @@ use actix_web::middleware;
 use actix_web::{http, App, HttpServer};
 use listenfd::ListenFd;
 
-mod data;
 mod file;
 mod server;
 

@@ -2,15 +2,15 @@
 	"folders": [
 		{
 			"path": "backend",
-			"name": "Server"
 		},
 		{
 			"path": "frontend",
-			"name": "Client"
+		},
+		{
+			"path": "common",
 		},
 		{
 			"path": "html_dummy",
-			"name": "HTML Scratch"
 		}
 	],
 	"settings": {

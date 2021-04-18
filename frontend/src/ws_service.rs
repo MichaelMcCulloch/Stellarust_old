@@ -4,11 +4,8 @@ use yew::format::Json;
 use yew::prelude::*;
 use yew::services::websocket::{WebSocketService, WebSocketStatus, WebSocketTask};
 
-#[derive(Debug, Deserialize, Serialize)]
-pub struct MyJsonFile {
-    name: String,
-    number: i32,
-}
+extern crate common;
+use common::MyJsonFile;
 #[derive(Debug, Deserialize, Serialize)]
 pub enum SubscriptionAction {
     Subscribe,
