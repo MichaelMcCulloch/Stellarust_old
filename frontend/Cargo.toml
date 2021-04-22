@@ -21,6 +21,8 @@ serde_derive = "1"
 yew = '0.17.4'
 failure = '0.1.8'
 anyhow = '1.0.40'
+gloo = "0.2.1"
+web-sys = {version="0.3.50", features=["EventSource","DomRect","Element","DomTokenList","HtmlCanvasElement","HtmlImageElement"]}
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires

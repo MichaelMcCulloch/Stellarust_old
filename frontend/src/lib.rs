@@ -5,6 +5,7 @@ mod fetch_service;
 mod graph;
 mod header;
 mod ws_service;
+mod event_source;
 
 pub use app::App;
 
