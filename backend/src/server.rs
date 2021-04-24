@@ -1,17 +1,35 @@
-use std::time::{Duration, Instant};
-
 use actix::prelude::*;
-use actix_web::Error;
-use actix_web::{web, HttpRequest, HttpResponse};
+use actix_web::{
+    web::{self, Data, Path},
+    Error, HttpRequest, HttpResponse, Responder,
+};
 use actix_web_actors::ws;
+use std::sync::Mutex;
+use std::time::{Duration, Instant};
 
 extern crate common;
 use common::MyJsonFile;
+
+use super::broadcaster::Broadcaster;
 
 /// How often heartbeat pings are sent
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
 /// How long before lack of client response causes a timeout
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
+
+async fn new_client(broadcaster: Data<Mutex<Broadcaster>>) -> impl Responder {
+    let rx = broadcaster.lock().unwrap().new_client();
+
+    HttpResponse::Ok()
+        .header("content-type", "text/event-stream")
+        .streaming(rx)
+}
+
+async fn broadcast(msg: Path<String>, broadcaster: Data<Mutex<Broadcaster>>) -> impl Responder {
+    broadcaster.lock().unwrap().send(&msg.into_inner());
+
+    HttpResponse::Ok().body("msg sent")
+}
 
 /// do websocket handshake and start `MyWebSocket` actor
 async fn ws_index(r: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
@@ -103,7 +121,9 @@ pub fn get_json_file() -> HttpResponse {
 }
 
 pub fn config_server(cfg: &mut web::ServiceConfig) {
-    cfg.service(web::resource("/").route(web::get().to(ws_index)));
-    cfg.service(web::resource("/json_post/").route(web::post().to(echo_json_file)));
-    cfg.service(web::resource("/json_get/").route(web::get().to(get_json_file)));
+    cfg.service(web::resource("/websocket").route(web::get().to(ws_index)));
+    cfg.service(web::resource("/json_post").route(web::post().to(echo_json_file)));
+    cfg.service(web::resource("/json_get").route(web::get().to(get_json_file)));
+    cfg.service(web::resource("/events").route(web::get().to(new_client)));
+    cfg.service(web::resource("/broadcast/{msg}").route(web::get().to(broadcast)));
 }

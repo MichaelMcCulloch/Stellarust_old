@@ -5,8 +5,10 @@ use std::time::Duration;
 use actix_cors::Cors;
 use actix_web::middleware;
 use actix_web::{http, App, HttpServer};
+use broadcaster::Broadcaster;
 use listenfd::ListenFd;
 
+mod broadcaster;
 mod file;
 mod server;
 
@@ -25,7 +27,8 @@ async fn main() -> std::io::Result<()> {
 
     let mut listenfd = ListenFd::from_env();
 
-    let mut server = HttpServer::new(|| {
+    let broadcaster_data = Broadcaster::create();
+    let mut server = HttpServer::new(move || {
         let cors = Cors::default()
             .allowed_origin("http://localhost:3000")
             .allowed_origin("http://127.0.0.1:3000")
@@ -40,6 +43,7 @@ async fn main() -> std::io::Result<()> {
             .max_age(3600);
 
         App::new()
+            .app_data(broadcaster_data.clone())
             // enable logger
             .wrap(middleware::Logger::default())
             .wrap(cors)
