@@ -1,21 +1,10 @@
 use anyhow::Error;
-use serde_derive::{Deserialize, Serialize};
 use yew::format::Json;
 use yew::prelude::*;
 use yew::services::websocket::{WebSocketService, WebSocketStatus, WebSocketTask};
 
 extern crate common;
 use common::MyJsonFile;
-#[derive(Debug, Deserialize, Serialize)]
-pub enum SubscriptionAction {
-    Subscribe,
-    Unsubscribe,
-}
-#[derive(Debug, Deserialize, Serialize)]
-pub struct SubscriptionRequest {
-    action: SubscriptionAction,
-    empire_name: String,
-}
 
 pub enum WsAction {
     Connect,
@@ -63,9 +52,12 @@ impl Component for WebsocketComponent {
                         WebSocketStatus::Opened => Msg::Ignore,
                         WebSocketStatus::Closed | WebSocketStatus::Error => WsAction::Lost.into(),
                     });
-                    let task =
-                        WebSocketService::connect("ws://127.0.0.1:8000/", callback, notification)
-                            .unwrap();
+                    let task = WebSocketService::connect(
+                        "ws://127.0.0.1:8000/websocket",
+                        callback,
+                        notification,
+                    )
+                    .unwrap();
                     self.ws = Some(task);
                     true
                 }
@@ -74,6 +66,7 @@ impl Component for WebsocketComponent {
                         name: "websocket out".into(),
                         number: 23,
                     };
+
                     self.ws.as_mut().unwrap().send(Json(&request));
                     true
                 }

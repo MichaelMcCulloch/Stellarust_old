@@ -1,3 +1,4 @@
+use super::event_source_service::EventSourceComponent;
 use super::fetch_service::FetchComponent;
 use super::header::PageHeader;
 use super::ws_service::WebsocketComponent;
@@ -42,6 +43,7 @@ impl Component for App {
                <PageHeader empire_name="THE GREAT KHANATE" player_name="George"/>
                <FetchComponent/>
                <WebsocketComponent/>
+               <EventSourceComponent/>
             </div>
         }
     }

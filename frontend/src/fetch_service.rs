@@ -52,7 +52,7 @@ impl FetchComponent {
                         Msg::Ignore // FIXME: Handle this error accordingly.
                     }
                 });
-        let request = Request::get("http://127.0.0.1:8000/json_get/")
+        let request = Request::get("http://127.0.0.1:8000/json_get")
             .header("Access-Control-Allow-Origin", "http://127.0.0.1:8000")
             .body(Nothing)
             .expect("Could not form request");
