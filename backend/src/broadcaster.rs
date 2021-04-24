@@ -66,10 +66,10 @@ impl Broadcaster {
     }
 
     pub fn send(&self, msg: &str) {
-        let msg = Bytes::from([msg, "\n\n"].concat());
+        let msg = Bytes::from(["data: ", msg, "\n\n"].concat());
 
         for client in self.clients.iter() {
-            client.clone().try_send(msg.clone()).unwrap();
+            client.clone().try_send(msg.clone()).unwrap_or(());
         }
     }
 }
