@@ -45,7 +45,9 @@ impl Broadcaster {
     fn remove_stale_clients(&mut self) {
         let mut ok_clients = Vec::new();
         for client in self.clients.iter() {
-            let result = client.clone().try_send(Bytes::from("data: ping\n\n"));
+            let result = client
+                .clone()
+                .try_send(Bytes::from("event: ping\ndata: ping\n\n"));
 
             if let Ok(()) = result {
                 ok_clients.push(client.clone());
@@ -58,7 +60,7 @@ impl Broadcaster {
         let (tx, rx) = channel(100);
 
         tx.clone()
-            .try_send(Bytes::from("data: connected\n\n"))
+            .try_send(Bytes::from("event: connected\ndata: connected\n\n"))
             .unwrap();
 
         self.clients.push(tx);
@@ -66,7 +68,7 @@ impl Broadcaster {
     }
 
     pub fn send(&self, msg: &str) {
-        let msg = Bytes::from(["data: ", msg, "\n\n"].concat());
+        let msg = Bytes::from(["event: message\ndata: ", msg, "\n\n"].concat());
 
         for client in self.clients.iter() {
             client.clone().try_send(msg.clone()).unwrap_or(());
