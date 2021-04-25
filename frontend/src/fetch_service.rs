@@ -1,5 +1,4 @@
 use anyhow::Error;
-use serde_derive::Deserialize;
 use yew::prelude::*;
 use yew::services::fetch::FetchTask;
 use yew::{

@@ -1,27 +1,14 @@
-use std::sync::mpsc;
-use std::thread;
-use std::time::Duration;
-
 use actix_cors::Cors;
-use actix_web::middleware;
-use actix_web::{http, App, HttpServer};
+use actix_files::Files;
+use actix_web::{http, middleware, web, App, HttpServer};
 use broadcaster::Broadcaster;
 use listenfd::ListenFd;
 
 mod broadcaster;
-mod file;
-mod server;
-
-use crate::server::config_server;
+mod responder;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let (tx, rx) = mpsc::channel();
-    thread::spawn(move || {
-        println!("alks;dfljkdsfdsajk");
-        tx.send("a value")
-    });
-
     std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
     env_logger::init();
 
@@ -44,10 +31,13 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .app_data(broadcaster_data.clone())
-            // enable logger
             .wrap(middleware::Logger::default())
             .wrap(cors)
-            .configure(config_server)
+            .service(web::resource("/json_post").route(web::post().to(responder::echo_json_file)))
+            .service(web::resource("/json_get").route(web::get().to(responder::get_json_file)))
+            .service(web::resource("/events").route(web::get().to(responder::new_client)))
+            .service(web::resource("/broadcast/{msg}").route(web::get().to(responder::broadcast)))
+            .service(Files::new("/", "./static/").index_file("index.html"))
     });
 
     server = match listenfd.take_tcp_listener(0)? {
@@ -59,7 +49,5 @@ async fn main() -> std::io::Result<()> {
         }
     };
 
-    // start http server on 127.0.0.1:8080
-    println!("{}", rx.recv().unwrap());
     server.run().await
 }

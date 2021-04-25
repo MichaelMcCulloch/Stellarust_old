@@ -52,7 +52,6 @@ impl Component for EventSourceComponent {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::EsReady(response) => {
-                log::info!("RECEIVED");
                 match response {
                     Ok(data_result) => {
                         self.data = Some(data_result);
@@ -61,12 +60,10 @@ impl Component for EventSourceComponent {
                         log::error!("{}", e);
                     }
                 };
+                true
             }
-            Msg::EsCheckState => {
-                log::info!("CHECK");
-            }
+            Msg::EsCheckState => true,
         }
-        true
     }
 
     fn change(&mut self, _props: Self::Properties) -> ShouldRender {
@@ -77,7 +74,6 @@ impl Component for EventSourceComponent {
         html! {
             <div>
                 <nav class="menu">
-                    { format!("{:?}", self.es )}
                     { self.view_data() }
                 </nav>
             </div>
@@ -90,14 +86,12 @@ impl EventSourceComponent {
         if let Some(value) = &self.data {
             html! {
                 <>
-                    <p>{ format!("Connection State: {:?}", self.es.ready_state()) }</p>
-                    <p> { format!("{:?}", value) } </p>
+                    <p> { format!("Event source data {:?}", value) } </p>
                 </>
             }
         } else {
             html! {
                 <>
-                    <p>{ format!("Connection State: {:?}", self.es.ready_state()) }</p>
                     <p>{ "Data hasn't fetched yet." }</p>
                 </>
             }
