@@ -1,6 +1,3 @@
-use std::sync::mpsc;
-use std::thread;
-
 use actix_cors::Cors;
 use actix_web::middleware;
 use actix_web::{http, App, HttpServer};
@@ -8,17 +5,10 @@ use broadcaster::Broadcaster;
 use listenfd::ListenFd;
 
 mod broadcaster;
-mod file;
 mod server;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let (tx, rx) = mpsc::channel();
-    thread::spawn(move || {
-        println!("alks;dfljkdsfdsajk");
-        tx.send("a value")
-    });
-
     std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
     env_logger::init();
 
@@ -41,7 +31,6 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .app_data(broadcaster_data.clone())
-            // enable logger
             .wrap(middleware::Logger::default())
             .wrap(cors)
             .configure(server::config_server)
@@ -56,7 +45,5 @@ async fn main() -> std::io::Result<()> {
         }
     };
 
-    // start http server on 127.0.0.1:8080
-    println!("{}", rx.recv().unwrap());
     server.run().await
 }
