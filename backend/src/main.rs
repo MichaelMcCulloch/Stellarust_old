@@ -1,6 +1,5 @@
 use actix_cors::Cors;
-use actix_web::middleware;
-use actix_web::{http, App, HttpServer};
+use actix_web::{http, middleware, web, App, HttpServer};
 use broadcaster::Broadcaster;
 use listenfd::ListenFd;
 
@@ -33,7 +32,10 @@ async fn main() -> std::io::Result<()> {
             .app_data(broadcaster_data.clone())
             .wrap(middleware::Logger::default())
             .wrap(cors)
-            .configure(server::config_server)
+            .service(web::resource("/json_post").route(web::post().to(server::echo_json_file)))
+            .service(web::resource("/json_get").route(web::get().to(server::get_json_file)))
+            .service(web::resource("/events").route(web::get().to(server::new_client)))
+            .service(web::resource("/broadcast/{msg}").route(web::get().to(server::broadcast)))
     });
 
     server = match listenfd.take_tcp_listener(0)? {
