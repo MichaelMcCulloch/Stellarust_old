@@ -5,7 +5,7 @@ use broadcaster::Broadcaster;
 use listenfd::ListenFd;
 
 mod broadcaster;
-mod server;
+mod responder;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -33,10 +33,10 @@ async fn main() -> std::io::Result<()> {
             .app_data(broadcaster_data.clone())
             .wrap(middleware::Logger::default())
             .wrap(cors)
-            .service(web::resource("/json_post").route(web::post().to(server::echo_json_file)))
-            .service(web::resource("/json_get").route(web::get().to(server::get_json_file)))
-            .service(web::resource("/events").route(web::get().to(server::new_client)))
-            .service(web::resource("/broadcast/{msg}").route(web::get().to(server::broadcast)))
+            .service(web::resource("/json_post").route(web::post().to(responder::echo_json_file)))
+            .service(web::resource("/json_get").route(web::get().to(responder::get_json_file)))
+            .service(web::resource("/events").route(web::get().to(responder::new_client)))
+            .service(web::resource("/broadcast/{msg}").route(web::get().to(responder::broadcast)))
             .service(Files::new("/", "./static/").index_file("index.html"))
     });
 
