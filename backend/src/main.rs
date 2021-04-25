@@ -11,8 +11,6 @@ mod broadcaster;
 mod file;
 mod server;
 
-use crate::server::config_server;
-
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let (tx, rx) = mpsc::channel();
@@ -46,7 +44,7 @@ async fn main() -> std::io::Result<()> {
             // enable logger
             .wrap(middleware::Logger::default())
             .wrap(cors)
-            .configure(config_server)
+            .configure(server::config_server)
     });
 
     server = match listenfd.take_tcp_listener(0)? {
