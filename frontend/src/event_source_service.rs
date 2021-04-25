@@ -36,7 +36,7 @@ impl Component for EventSourceComponent {
                 Msg::EsCheckState
             });
             let mut task = EventSourceService::new()
-                .connect("http://127.0.0.1:8000/events", notification)
+                .connect("/events", notification)
                 .unwrap();
             task.add_event_listener("message", callback);
             task

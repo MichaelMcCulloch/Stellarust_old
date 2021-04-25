@@ -51,8 +51,7 @@ impl FetchComponent {
                         Msg::Ignore // FIXME: Handle this error accordingly.
                     }
                 });
-        let request = Request::get("http://127.0.0.1:8000/json_get")
-            .header("Access-Control-Allow-Origin", "http://127.0.0.1:8000")
+        let request = Request::get("/json_get")
             .body(Nothing)
             .expect("Could not form request");
         FetchService::fetch(request, callback).unwrap()
@@ -101,12 +100,6 @@ impl Component for FetchComponent {
                 <nav class="menu">
                     <button onclick=self.link.callback(|_| Msg::FetchData)>
                         { "Fetch Data" }
-                    </button>
-                    <button onclick=self.link.callback(|_| Msg::FetchData)>
-                        { "Fetch Data [binary]" }
-                    </button>
-                    <button onclick=self.link.callback(|_| Msg::FetchData)>
-                        { "Fetch Data [toml]" }
                     </button>
                     { self.view_data() }
 
