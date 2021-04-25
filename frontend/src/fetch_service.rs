@@ -101,12 +101,6 @@ impl Component for FetchComponent {
                     <button onclick=self.link.callback(|_| Msg::FetchData)>
                         { "Fetch Data" }
                     </button>
-                    <button onclick=self.link.callback(|_| Msg::FetchData)>
-                        { "Fetch Data [binary]" }
-                    </button>
-                    <button onclick=self.link.callback(|_| Msg::FetchData)>
-                        { "Fetch Data [toml]" }
-                    </button>
                     { self.view_data() }
 
                 </nav>
