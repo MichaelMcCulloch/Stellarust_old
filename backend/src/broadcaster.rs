@@ -18,12 +18,8 @@ pub struct Broadcaster {
 
 impl Broadcaster {
     pub fn create() -> Data<Mutex<Self>> {
-        // Data ≃ Arc
         let me = Data::new(Mutex::new(Broadcaster::new()));
-
-        // ping clients every 10 seconds to see if they are alive
         Broadcaster::spawn_ping(me.clone());
-
         me
     }
 

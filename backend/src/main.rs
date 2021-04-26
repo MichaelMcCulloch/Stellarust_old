@@ -1,6 +1,5 @@
-use actix_cors::Cors;
 use actix_files::Files;
-use actix_web::{http, middleware, web, App, HttpServer};
+use actix_web::{middleware, web, App, HttpServer};
 use broadcaster::Broadcaster;
 use listenfd::ListenFd;
 
