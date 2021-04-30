@@ -18,7 +18,7 @@
         {
             "label": "Deploy Client",
             "type": "shell",
-            "command": "miniserve -v ./static --index index.html -p 3000",
+            "command": "miniserve -v ./static --index index.html -p 3000 --header \"Access-Control-Allow-Origin: *\"",
             "group": "build",
             "dependsOn": [
                 "Build"
