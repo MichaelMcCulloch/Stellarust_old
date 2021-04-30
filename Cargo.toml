@@ -5,3 +5,11 @@ members = [
     "frontend",
     "backend"
 ]
+
+[profile.release.package.frontend]
+# Tell `rustc` to optimize for small code size.
+opt-level = "s"
+
+[profile.release.package.backend]
+# Tell `rustc` to optimize for small code size.
+opt-level = 3
