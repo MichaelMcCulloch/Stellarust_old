@@ -28,48 +28,44 @@ impl FileReader {
 
     fn start_file_reader_thread(&self, directory_watcher_rx: Receiver<RawEvent>) {
         let sender = self.tx.clone();
-        actix_web::rt::spawn(async move {
-            loop {
-                let path = match directory_watcher_rx.recv() {
-                    Ok(RawEvent {
-                        path: Some(path),
-                        op: Ok(Op::CLOSE_WRITE),
-                        cookie: _,
-                    }) => path,
-                    Ok(_) => continue,
-                    Err(e) => {
-                        log::error!("{}", e);
-                        continue;
-                    }
-                };
+        thread::spawn(move || loop {
+            let path = match directory_watcher_rx.recv() {
+                Ok(RawEvent {
+                    path: Some(path),
+                    op: Ok(Op::CLOSE_WRITE),
+                    cookie: _,
+                }) => path,
+                Ok(_) => continue,
+                Err(e) => {
+                    log::error!("{}", e);
+                    continue;
+                }
+            };
 
-                let mut file = match File::open(path) {
-                    Ok(file) => file,
-                    Err(e) => {
-                        log::error!("{}", e);
-                        continue;
-                    }
-                };
+            let mut file = match File::open(path) {
+                Ok(file) => file,
+                Err(e) => {
+                    log::error!("{}", e);
+                    continue;
+                }
+            };
 
-                let mut content = String::new();
-                match file.read_to_string(&mut content) {
-                    Ok(bytes) => bytes,
-                    Err(e) => {
-                        log::error!("{}", e);
-                        continue;
-                    }
-                };
+            let mut content = String::new();
+            match file.read_to_string(&mut content) {
+                Ok(bytes) => bytes,
+                Err(e) => {
+                    log::error!("{}", e);
+                    continue;
+                }
+            };
 
-                log::info!("Sending: {}", content);
-
-                match sender.send(content) {
-                    Ok(()) => {}
-                    Err(e) => {
-                        log::error!("{}", e);
-                        continue;
-                    }
+            match sender.send(content) {
+                Ok(()) => {}
+                Err(e) => {
+                    log::error!("{}", e);
+                    continue;
                 }
             }
-        })
+        });
     }
 }
