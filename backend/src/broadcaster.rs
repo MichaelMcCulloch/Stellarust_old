@@ -4,7 +4,8 @@ use actix_web::{
     Error,
 };
 use futures::{Stream, StreamExt};
-use std::sync::Mutex;
+use notify::{Op, RawEvent};
+use std::{iter::Rev, sync::Mutex};
 use std::{
     pin::Pin,
     task::{Context, Poll},
@@ -17,9 +18,10 @@ pub struct Broadcaster {
 }
 
 impl Broadcaster {
-    pub fn create() -> Data<Mutex<Self>> {
+    pub fn create(notifier: std::sync::mpsc::Receiver<RawEvent>) -> Data<Mutex<Self>> {
         let me = Data::new(Mutex::new(Broadcaster::new()));
         Broadcaster::spawn_ping(me.clone());
+        Broadcaster::watch_directory(me.clone(), notifier);
         me
     }
 
@@ -27,6 +29,30 @@ impl Broadcaster {
         Broadcaster {
             clients: Vec::new(),
         }
+    }
+
+    fn watch_directory(me: Data<Mutex<Self>>, notifier: std::sync::mpsc::Receiver<RawEvent>) {
+        actix_web::rt::spawn(async move {
+            loop {
+                match notifier.recv() {
+                    Ok(event) => match event.op {
+                        Ok(operation) => match operation {
+                            Op::CLOSE_WRITE => {
+                                let filename = event.path.unwrap();
+                                print!("{:?}", filename);
+                                me.lock().unwrap().send(filename.to_str().unwrap());
+                            }
+                            _ => {}
+                        },
+                        _ => {}
+                    },
+                    Err(e) => {
+                        println!("watch error:{:?}", e);
+                        me.lock().unwrap().send(e.to_string().as_str());
+                    }
+                }
+            }
+        })
     }
 
     fn spawn_ping(me: Data<Mutex<Self>>) {

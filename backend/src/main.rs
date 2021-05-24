@@ -1,11 +1,12 @@
-use actix_cors::Cors;
-use actix_web::{http, middleware, web, App, HttpServer};
-use broadcaster::Broadcaster;
-use listenfd::ListenFd;
-
+mod api;
 mod broadcaster;
-mod responder;
+mod directory_watcher;
 
+use actix_cors::Cors;
+use actix_web::{http, middleware, App, HttpServer};
+use broadcaster::Broadcaster;
+use directory_watcher::DirectoryWatcher;
+use listenfd::ListenFd;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
@@ -13,7 +14,10 @@ async fn main() -> std::io::Result<()> {
 
     let mut listenfd = ListenFd::from_env();
 
-    let broadcaster_data = Broadcaster::create();
+    let dir_watcher = DirectoryWatcher::create("/home/michael/Dev/Stellarust/html_dummy".into());
+
+    let broadcaster_data = Broadcaster::create(dir_watcher.rx);
+
     let mut server = HttpServer::new(move || {
         let cors = Cors::default()
             .allowed_origin("http://localhost:3000")
