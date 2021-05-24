@@ -37,7 +37,7 @@ impl Broadcaster {
         actix_web::rt::spawn(async move {
             loop {
                 match file_watcher_rx.recv() {
-                    Ok(event) => me.lock().unwrap().send(event.as_str()),
+                    Ok(string) => me.lock().unwrap().send(string.as_str()),
                     Err(e) => me.lock().unwrap().send(e.to_string().as_str()),
                 }
             }
