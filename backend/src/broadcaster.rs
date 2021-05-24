@@ -5,23 +5,25 @@ use actix_web::{
 };
 use futures::{Stream, StreamExt};
 use notify::{Op, RawEvent};
-use std::{iter::Rev, sync::Mutex};
 use std::{
     pin::Pin,
+    sync::Mutex,
     task::{Context, Poll},
     time::Duration,
 };
 use tokio::sync::mpsc::{channel, Receiver, Sender};
+
+type StdReceiver<T> = std::sync::mpsc::Receiver<T>;
 
 pub struct Broadcaster {
     clients: Vec<Sender<Bytes>>,
 }
 
 impl Broadcaster {
-    pub fn create(notifier: std::sync::mpsc::Receiver<RawEvent>) -> Data<Mutex<Self>> {
+    pub fn create(file_watcher_rx: StdReceiver<String>) -> Data<Mutex<Self>> {
         let me = Data::new(Mutex::new(Broadcaster::new()));
         Broadcaster::spawn_ping(me.clone());
-        Broadcaster::watch_directory(me.clone(), notifier);
+        Broadcaster::watch(me.clone(), file_watcher_rx);
         me
     }
 
@@ -31,25 +33,12 @@ impl Broadcaster {
         }
     }
 
-    fn watch_directory(me: Data<Mutex<Self>>, notifier: std::sync::mpsc::Receiver<RawEvent>) {
+    fn watch(me: Data<Mutex<Self>>, file_watcher_rx: StdReceiver<String>) {
         actix_web::rt::spawn(async move {
             loop {
-                match notifier.recv() {
-                    Ok(event) => match event.op {
-                        Ok(operation) => match operation {
-                            Op::CLOSE_WRITE => {
-                                let filename = event.path.unwrap();
-                                print!("{:?}", filename);
-                                me.lock().unwrap().send(filename.to_str().unwrap());
-                            }
-                            _ => {}
-                        },
-                        _ => {}
-                    },
-                    Err(e) => {
-                        println!("watch error:{:?}", e);
-                        me.lock().unwrap().send(e.to_string().as_str());
-                    }
+                match file_watcher_rx.recv() {
+                    Ok(event) => me.lock().unwrap().send(event.as_str()),
+                    Err(e) => me.lock().unwrap().send(e.to_string().as_str()),
                 }
             }
         })

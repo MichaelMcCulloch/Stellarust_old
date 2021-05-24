@@ -16,9 +16,10 @@ async fn main() -> std::io::Result<()> {
 
     let mut listenfd = ListenFd::from_env();
 
-    let dir_watcher = DirectoryWatcher::create("/home/michael/Dev/Stellarust/html_dummy".into());
-
-    let broadcaster_data = Broadcaster::create(dir_watcher.rx);
+    let directory_watcher =
+        DirectoryWatcher::create("/home/michael/Dev/Stellarust/html_dummy".into());
+    let file_watcher = FileWatcher::create(directory_watcher.rx);
+    let broadcaster_data = Broadcaster::create(file_watcher.rx);
 
     let mut server = HttpServer::new(move || {
         let cors = Cors::default()
