@@ -1,11 +1,13 @@
 mod api;
 mod broadcaster;
 mod directory_watcher;
+mod file_reader;
 
 use actix_cors::Cors;
 use actix_web::{http, middleware, App, HttpServer};
 use broadcaster::Broadcaster;
 use directory_watcher::DirectoryWatcher;
+use file_reader::FileWatcher;
 use listenfd::ListenFd;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
