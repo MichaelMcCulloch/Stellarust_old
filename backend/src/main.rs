@@ -9,7 +9,7 @@ use directory_watcher::DirectoryWatcher;
 use listenfd::ListenFd;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
+    std::env::set_var("RUST_LOG", "info");
     env_logger::init();
 
     let mut listenfd = ListenFd::from_env();
