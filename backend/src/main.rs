@@ -29,10 +29,10 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .app_data(broadcaster_data.clone())
             .wrap(middleware::Logger::default())
-            .service(web::resource("/json_post").route(web::post().to(responder::echo_json_file)))
-            .service(web::resource("/json_get").route(web::get().to(responder::get_json_file)))
-            .service(web::resource("/events").route(web::get().to(responder::new_client)))
-            .service(web::resource("/broadcast/{msg}").route(web::get().to(responder::broadcast)))
+            .service(api::echo_json_file)
+            .service(api::get_json_file)
+            .service(api::new_client)
+            .service(api::broadcast)
     });
 
     server = match listenfd.take_tcp_listener(0)? {
