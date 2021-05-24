@@ -7,7 +7,7 @@ use actix_cors::Cors;
 use actix_web::{http, middleware, App, HttpServer};
 use broadcaster::Broadcaster;
 use directory_watcher::DirectoryWatcher;
-use file_reader::FileWatcher;
+use file_reader::FileReader;
 use listenfd::ListenFd;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -16,10 +16,11 @@ async fn main() -> std::io::Result<()> {
 
     let mut listenfd = ListenFd::from_env();
 
-    let directory_watcher =
-        DirectoryWatcher::create("/home/michael/Dev/Stellarust/html_dummy".into());
-    let file_watcher = FileWatcher::create(directory_watcher.rx);
-    let broadcaster_data = Broadcaster::create(file_watcher.rx);
+    let dir_path = "/home/michael/Dev/Stellarust/html_dummy";
+
+    let directory_watcher = DirectoryWatcher::create(dir_path.into());
+    let file_reader = FileReader::create(directory_watcher.rx);
+    let broadcaster_data = Broadcaster::create(file_reader.rx);
 
     let mut server = HttpServer::new(move || {
         let cors = Cors::default()

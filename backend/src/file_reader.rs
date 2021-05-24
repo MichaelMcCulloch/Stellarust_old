@@ -9,19 +9,19 @@ use std::{
     sync::mpsc::{channel, Receiver, Sender},
     thread,
 };
-pub struct FileWatcher {
+pub struct FileReader {
     tx: Sender<String>,
     pub rx: Receiver<String>,
 }
 
-impl FileWatcher {
+impl FileReader {
     fn new() -> Self {
         let (tx, rx) = channel();
-        FileWatcher { tx, rx }
+        FileReader { tx, rx }
     }
 
     pub fn create(directory_watcher_rx: Receiver<RawEvent>) -> Self {
-        let me = FileWatcher::new();
+        let me = FileReader::new();
         me.start_file_reader_thread(directory_watcher_rx);
         me
     }
