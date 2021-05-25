@@ -1,12 +1,26 @@
 mod api;
 mod broadcaster;
-mod directory_watcher;
 mod file_reader;
 
 use actix_cors::Cors;
 use actix_web::{http, middleware, App, HttpServer};
 use broadcaster::Broadcaster;
-use directory_watcher::DirectoryWatcher;
+
+#[cfg(target_os = "linux")]
+mod linux_directory_watcher;
+#[cfg(target_os = "linux")]
+use linux_directory_watcher::DirectoryWatcher;
+
+#[cfg(target_os = "windows")]
+use windows_directory_watcher::DirectoryWatcher;
+#[cfg(target_os = "windows")]
+mod windows_directory_watcher;
+
+#[cfg(target_os = "macos")]
+use macos_directory_watcher::DirectoryWatcher;
+#[cfg(target_os = "macos")]
+mod macos_directory_watcher;
+
 use file_reader::FileReader;
 use listenfd::ListenFd;
 #[actix_web::main]
