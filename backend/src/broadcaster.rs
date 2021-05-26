@@ -4,7 +4,6 @@ use actix_web::{
     Error,
 };
 use futures::{Stream, StreamExt};
-use notify::{Op, RawEvent};
 use std::{
     pin::Pin,
     sync::Mutex,

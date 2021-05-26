@@ -33,7 +33,7 @@ async fn main() -> std::io::Result<()> {
     let dir_path = "/home/michael/Dev/Stellarust/html_dummy";
 
     let directory_watcher = DirectoryWatcher::create(dir_path.into());
-    let file_reader = FileReader::create(directory_watcher.rx);
+    let file_reader = FileReader::create(directory_watcher.pathbuf_receiver);
     let broadcaster_data = Broadcaster::create(file_reader.rx);
 
     let mut server = HttpServer::new(move || {
