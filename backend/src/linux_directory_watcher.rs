@@ -23,18 +23,26 @@ impl DirectoryWatcher {
             .watch(watch_dir, RecursiveMode::NonRecursive)
             .unwrap();
 
+        dir_watcher.start_directory_watcher(raw_event_receiver, pathbuf_sender);
+
+        dir_watcher
+    }
+
+    fn start_directory_watcher(
+        &self,
+        raw_event_receiver: Receiver<RawEvent>,
+        pathbuf_sender: Sender<PathBuf>,
+    ) {
         thread::spawn(move || loop {
-            match loop_iter(&raw_event_receiver, &pathbuf_sender) {
+            match forward_event_to_path(&raw_event_receiver, &pathbuf_sender) {
                 Err(e) => log::error!("{}", e),
                 _ => continue,
             }
         });
-
-        dir_watcher
     }
 }
 
-fn loop_iter(
+fn forward_event_to_path(
     raw_event_receiver: &Receiver<RawEvent>,
     pathbuf_sender: &Sender<PathBuf>,
 ) -> Result<(), anyhow::Error> {

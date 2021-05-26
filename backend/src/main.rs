@@ -34,7 +34,7 @@ async fn main() -> std::io::Result<()> {
 
     let directory_watcher = DirectoryWatcher::create(dir_path.into());
     let file_reader = FileReader::create(directory_watcher.pathbuf_receiver);
-    let broadcaster_data = Broadcaster::create(file_reader.rx);
+    let broadcaster_data = Broadcaster::create(file_reader.file_content_receiver);
 
     let mut server = HttpServer::new(move || {
         let cors = Cors::default()
