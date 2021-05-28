@@ -17,14 +17,18 @@
 		"rust-analyzer.diagnostics.disabled": [
 			"unresolved-macro-call"
 		],
-		"editor.formatOnSave": true
+		"editor.formatOnSave": true,
+		"rust-analyzer.lens.methodReferences": true,
+		"rust-analyzer.lens.references": true,
+		"rust-analyzer.updates.askBeforeDownload": false
 	},
 	"extensions": {
 		"recommendations": [
 			"matklad.rust-analyzer",
 			"tht13.html-preview-vscode",
 			"serayuzgur.crates",
-			"bungcip.better-toml"
+			"bungcip.better-toml",
+			"vadimcn.vscode-lldb"
 		]
 	},
 }
