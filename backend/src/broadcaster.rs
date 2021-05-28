@@ -4,22 +4,25 @@ use actix_web::{
     Error,
 };
 use futures::{Stream, StreamExt};
-use std::sync::Mutex;
 use std::{
     pin::Pin,
+    sync::Mutex,
     task::{Context, Poll},
     time::Duration,
 };
 use tokio::sync::mpsc::{channel, Receiver, Sender};
+
+type StdReceiver<T> = std::sync::mpsc::Receiver<T>;
 
 pub struct Broadcaster {
     clients: Vec<Sender<Bytes>>,
 }
 
 impl Broadcaster {
-    pub fn create() -> Data<Mutex<Self>> {
+    pub fn create(file_content_receiver: StdReceiver<String>) -> Data<Mutex<Self>> {
         let me = Data::new(Mutex::new(Broadcaster::new()));
         Broadcaster::spawn_ping(me.clone());
+        Broadcaster::watch(me.clone(), file_content_receiver);
         me
     }
 
@@ -27,6 +30,17 @@ impl Broadcaster {
         Broadcaster {
             clients: Vec::new(),
         }
+    }
+
+    fn watch(me: Data<Mutex<Self>>, file_content_receiver: StdReceiver<String>) {
+        actix_web::rt::spawn(async move {
+            loop {
+                match file_content_receiver.recv() {
+                    Ok(string) => me.lock().unwrap().send(string.as_str()),
+                    Err(e) => me.lock().unwrap().send(e.to_string().as_str()),
+                }
+            }
+        })
     }
 
     fn spawn_ping(me: Data<Mutex<Self>>) {
@@ -53,14 +67,14 @@ impl Broadcaster {
     }
 
     pub fn new_client(&mut self) -> Client {
-        let (tx, rx) = channel(100);
+        let (bytes_sender, bytes_receiver) = channel(100);
 
-        tx.clone()
+        bytes_sender
             .try_send(Bytes::from("event: connected\ndata: connected\n\n"))
             .unwrap();
 
-        self.clients.push(tx);
-        Client(rx)
+        self.clients.push(bytes_sender);
+        Client(bytes_receiver)
     }
 
     pub fn send(&self, msg: &str) {
