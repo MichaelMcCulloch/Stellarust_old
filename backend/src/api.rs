@@ -8,7 +8,7 @@ use std::sync::Mutex;
 extern crate common;
 use common::MyJsonFile;
 
-use super::broadcaster::Broadcaster;
+use crate::broadcaster::Broadcaster;
 
 #[get("/events")]
 pub async fn new_client(broadcaster: Data<Mutex<Broadcaster>>) -> impl Responder {

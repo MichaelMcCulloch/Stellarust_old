@@ -1,6 +1,6 @@
-use super::event_source_service::EventSourceComponent;
-use super::fetch_service::FetchComponent;
-use super::header::PageHeader;
+use crate::event_source_service::EventSourceComponent;
+use crate::fetch_service::FetchComponent;
+use crate::header::PageHeader;
 use yew::prelude::*;
 
 pub struct App {
