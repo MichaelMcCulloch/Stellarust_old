@@ -53,17 +53,16 @@ impl Broadcaster {
     }
 
     fn remove_stale_clients(&mut self) {
-        let mut ok_clients = Vec::new();
-        for client in self.clients.iter() {
-            let result = client
-                .clone()
-                .try_send(Bytes::from("event: ping\ndata: ping\n\n"));
-
-            if let Ok(()) = result {
-                ok_clients.push(client.clone());
-            }
-        }
-        self.clients = ok_clients;
+        self.clients = self
+            .clients
+            .iter()
+            .filter_map(|client| {
+                match client.try_send(Bytes::from("event: ping\ndata: ping\n\n")) {
+                    Ok(_) => Some(client.clone()),
+                    Err(_) => None,
+                }
+            })
+            .collect();
     }
 
     pub fn new_client(&mut self) -> Client {
@@ -81,7 +80,7 @@ impl Broadcaster {
         let msg = Bytes::from(["event: message\ndata: ", msg, "\n\n"].concat());
 
         for client in self.clients.iter() {
-            client.clone().try_send(msg.clone()).unwrap_or(());
+            client.try_send(msg.clone()).unwrap_or(());
         }
     }
 }

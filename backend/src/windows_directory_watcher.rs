@@ -11,7 +11,7 @@ impl DirectoryWatcher {
     pub fn create(watch_dir: PathBuf) -> Self {
         let (raw_event_sender, raw_event_receiver) = channel();
         let (pathbuf_sender, pathbuf_receiver) = channel();
-        let watcher = raw_watcher(raw_event_sender.clone()).unwrap();
+        let watcher = raw_watcher(raw_event_sender).unwrap();
 
         let mut dir_watcher = DirectoryWatcher {
             watcher,

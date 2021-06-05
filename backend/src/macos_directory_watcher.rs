@@ -10,7 +10,7 @@ pub struct DirectoryWatcher {
 impl DirectoryWatcher {
     pub fn new() -> Self {
         let (tx, rx) = channel();
-        let watcher = raw_watcher(tx.clone()).unwrap();
+        let watcher = raw_watcher(tx).unwrap();
         DirectoryWatcher { watcher, rx }
     }
 
