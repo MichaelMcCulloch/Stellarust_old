@@ -8,8 +8,8 @@ use yew::{
         FetchService,
     },
 };
-extern crate common;
-use common::MyJsonFile;
+
+use stellarust::MyJsonFile;
 
 pub enum Msg {
     FetchData,

@@ -5,8 +5,7 @@ use actix_web::{
 };
 use std::sync::Mutex;
 
-extern crate common;
-use common::MyJsonFile;
+use stellarust::MyJsonFile;
 
 use crate::broadcaster::Broadcaster;
 

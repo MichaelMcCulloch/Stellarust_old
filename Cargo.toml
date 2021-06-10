@@ -1,15 +1,21 @@
-[workspace]
+[package]
+name = "stellarust"
+version = "0.1.0"
+authors = ["Michael McCulloch <michael.james.mcculloch@fastmail.com>"]
+edition = "2018"
 
+[dependencies]
+serde = "1"
+serde_derive = "1"
+
+[workspace]
 members = [
-    "common",
     "frontend",
     "backend"
 ]
 
 [profile.release.package.frontend]
-# Tell `rustc` to optimize for small code size.
 opt-level = "s"
 
 [profile.release.package.backend]
-# Tell `rustc` to optimize for small code size.
 opt-level = 3

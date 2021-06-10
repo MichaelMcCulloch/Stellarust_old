@@ -7,9 +7,6 @@
 			"path": "frontend",
 		},
 		{
-			"path": "common",
-		},
-		{
 			"path": "html_dummy",
 		}
 	],
