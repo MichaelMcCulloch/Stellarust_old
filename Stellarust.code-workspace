@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "html_dummy",
+		},
+		{
+			"path": "src",
 		}
 	],
 	"settings": {
