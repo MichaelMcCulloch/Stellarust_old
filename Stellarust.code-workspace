@@ -11,6 +11,10 @@
 		},
 		{
 			"path": "src",
+		},
+		{
+			"name": "<ROOT>",
+			"path": ".",
 		}
 	],
 	"settings": {
