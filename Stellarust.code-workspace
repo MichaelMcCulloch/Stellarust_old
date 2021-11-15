@@ -12,10 +12,6 @@
 		{
 			"path": "src",
 		},
-		{
-			"name": "<ROOT>",
-			"path": ".",
-		}
 	],
 	"settings": {
 		"rust-analyzer.diagnostics.disabled": [
